@@ -35,7 +35,7 @@ export default {
     }
   },
   created() {
-
+    this.checkSettings()
   },
   computed: {
 

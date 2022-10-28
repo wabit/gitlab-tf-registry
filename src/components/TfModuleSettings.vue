@@ -64,8 +64,6 @@ export default {
       this.appToken = this.$session.get("appToken")
     },
     save() {
-      console.log(this.groupId)
-      console.log(this.appToken)
       this.$session.set("groupId", this.groupId)
       this.$session.set("appToken", this.appToken)
       this.$emit('save')
