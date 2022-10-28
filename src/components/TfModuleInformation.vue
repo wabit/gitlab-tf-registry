@@ -127,7 +127,6 @@ import "vue-code-highlight/themes/window.css";
 import 'prism-es6/components/prism-hcl';
 import 'prism-es6/components/prism-bash';
 import VueCodeHighlight from 'vue-code-highlight';
-Vue.use(VueCodeHighlight);
 
 Vue.use(VueCodeHighlight)
 
