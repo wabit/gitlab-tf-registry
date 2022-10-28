@@ -17,7 +17,8 @@
     "vue-code-highlight": "^0.7.8",
     "vue-router": "^3.5.1",
     "vue-sessionstorage": "^1.0.0",
-    "vuetify": "^2.6.0"
+    "vuetify": "^2.6.0",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "@aiping/vue-cli-plugin-axios": "^1.0.0",
