@@ -28,7 +28,7 @@
           <v-expansion-panel-header>
             <v-row justify="center">
               <v-col cols-="1">
-                <v-avatar>
+                <v-avatar rounded>
                   <img :src= tfmodule.avatar_url >
                 </v-avatar>
               </v-col>
@@ -149,41 +149,41 @@ import TfModuleVersions from '@/components/TfModuleVersions.vue'
       }
     },
     async getModuleInfo() {
-      try {
-        for (const module of this.modules) {
+      for (const module of this.modules) {
+        try {
           const moduleMainGroup = module.path_with_namespace.split("/", 1)
           const moduleCurrentVersion = await this.$http.get(
             "https://gitlab.com/api/v4/packages/terraform/modules/v1/" + moduleMainGroup + "/" + module.path + "/aws",{
               headers: {
                 Authorization: 'Bearer ' + this.appToken
               }
-            })
-            module.tf_module_current = moduleCurrentVersion.data
-            this.$forceUpdate()
+          })
+          module.tf_module_current = moduleCurrentVersion.data
+        } catch (error) {
+          console.log(error)
         }
-      } catch (error) {
-        console.log(error)
+        this.$forceUpdate()
       }
     },
     async getModuleVersionInfo() {
-      try {
-        for (const module of this.modules) {
+      for (const module of this.modules) {
+        try {
           const moduleMainGroup = module.path_with_namespace.split("/", 1)
           const moduleVersionsData = await this.$http.get(
             "https://gitlab.com/api/v4/packages/terraform/modules/v1/" + moduleMainGroup + "/" + module.path + "/aws/versions",{
               headers: {
                 Authorization: 'Bearer ' + this.appToken
               }
-            })
-            const moduleVersions = []
-            moduleVersionsData.data.modules[0].versions.forEach(element => {
-              moduleVersions.push(element.version)
-            })
-            module.tf_module_versions = moduleVersions
-            this.$forceUpdate()
+          })
+          const moduleVersions = []
+          moduleVersionsData.data.modules[0].versions.forEach(element => {
+            moduleVersions.push(element.version)
+          })
+          module.tf_module_versions = moduleVersions
+        } catch (error) {
+          console.log(error)
         }
-      } catch (error) {
-        console.log(error)
+        this.$forceUpdate()
       }
     }
   }
