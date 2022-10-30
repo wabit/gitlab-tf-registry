@@ -46,7 +46,7 @@
       <v-col cols="6">
         <v-card class="mr-4 mt-0 flexcard" height="310">
           <v-card-title>Module Information</v-card-title>
-          <v-card-text>
+          <v-card-text v-if="!repoInfo.tf_module_current.error">
             <div class="ma-4">Provider: {{ repoInfo.tf_module_current.provider }}</div>
             <div class="ma-4">Current Version: {{ repoInfo.tf_module_current.version }}</div>
             <div class="ma-4">Comment: {{ latestCommitMessage }}</div>
@@ -58,6 +58,9 @@
               dark
             > Provision Instructions
             </v-btn>
+          </v-card-text>
+          <v-card-text v-if="repoInfo.tf_module_current.error">
+            <div>{{repoInfo.tf_module_current.errorDetails.message}}</div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -163,8 +166,12 @@ export default {
     }
   },
   created() {
+    if (this.repoInfo.tf_module_current.error) {
+      this.getCommitMessage(this.repoInfo.id, this.repoInfo.default_branch)
+    } else {
       this.getCommitMessage(this.repoInfo.id, this.repoInfo.tf_module_current.version)
-    },
+    }
+  },
   methods: {
     getRandomColor() {
       this.randomColor = this.generateRandomHexColor();

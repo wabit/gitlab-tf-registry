@@ -48,7 +48,7 @@
             <v-tab>
               <v-icon left>mdi-text-box</v-icon> docs
             </v-tab>
-            <v-tab>
+            <v-tab v-if="!tfmodule.tf_module_current.error">
               <v-icon left>mdi-history</v-icon> versions
             </v-tab>
             <v-tab-item>
@@ -69,7 +69,7 @@
                 </v-card-text>
               </v-card>
             </v-tab-item>
-            <v-tab-item>
+            <v-tab-item v-if="!tfmodule.tf_module_current.error">
               <v-card flat>
                 <v-card-text>
                   <p>
@@ -122,6 +122,11 @@ import TfModuleVersions from '@/components/TfModuleVersions.vue'
               Authorization: 'Bearer ' + this.appToken
             }
           })
+        for (const module of response.data) {
+          module.tf_module_current = {}
+          module.tf_module_current.error = false
+        }
+
         this.modules = response.data
         this.getReadmes()
         this.getModuleInfo()
@@ -135,7 +140,7 @@ import TfModuleVersions from '@/components/TfModuleVersions.vue'
       try {
         for (const module of this.modules) {
           const readme = await this.$http.get(
-            "https://gitlab.com/api/v4/projects/" + module.id + "/repository/files/README.md?ref=master",{
+            "https://gitlab.com/api/v4/projects/" + module.id + "/repository/files/README.md?ref=" + module.default_branch,{
               headers: {
                 Authorization: 'Bearer ' + this.appToken
               }
@@ -159,31 +164,43 @@ import TfModuleVersions from '@/components/TfModuleVersions.vue'
               }
           })
           module.tf_module_current = moduleCurrentVersion.data
+          module.tf_module_current.error = false
+          console.log(module.name + "error: "+ module.tf_module_current.error)
         } catch (error) {
-          console.log(error)
+          module.tf_module_current = {}
+          module.tf_module_current.error = true
+          console.log(module.name + " error: "+ module.tf_module_current.error)
+          module.tf_module_current.errorDetails = {
+            message: error.response.data.message.error
+          }
+          console.log(module.tf_module_current.errorDetails.message)
         }
         this.$forceUpdate()
       }
     },
     async getModuleVersionInfo() {
       for (const module of this.modules) {
-        try {
-          const moduleMainGroup = module.path_with_namespace.split("/", 1)
-          const moduleVersionsData = await this.$http.get(
-            "https://gitlab.com/api/v4/packages/terraform/modules/v1/" + moduleMainGroup + "/" + module.path + "/aws/versions",{
-              headers: {
-                Authorization: 'Bearer ' + this.appToken
-              }
-          })
-          const moduleVersions = []
-          moduleVersionsData.data.modules[0].versions.forEach(element => {
-            moduleVersions.push(element.version)
-          })
-          module.tf_module_versions = moduleVersions
-        } catch (error) {
-          console.log(error)
+        if (!module.tf_module_current.error) {
+          try {
+            const moduleMainGroup = module.path_with_namespace.split("/", 1)
+            const moduleVersionsData = await this.$http.get(
+              "https://gitlab.com/api/v4/packages/terraform/modules/v1/" + moduleMainGroup + "/" + module.path + "/aws/versions",{
+                headers: {
+                  Authorization: 'Bearer ' + this.appToken
+                }
+            })
+            const moduleVersions = []
+            moduleVersionsData.data.modules[0].versions.forEach(element => {
+              moduleVersions.push(element.version)
+            })
+            module.tf_module_versions = moduleVersions
+          } catch (error) {
+            console.log(error)
+          }
+          this.$forceUpdate()
+        } else {
+          module.tf_module_versions = null
         }
-        this.$forceUpdate()
       }
     }
   }
