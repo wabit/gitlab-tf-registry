@@ -47,9 +47,11 @@ export default {
   },
   created() {
     this.getCommitMessage()
-    },
+  },
   methods: {
     async getCommitMessage() {
+      console.log(this.versions)
+
       try {
         for (const version of this.versions) {
           const commitMessage = await this.$http.get(
