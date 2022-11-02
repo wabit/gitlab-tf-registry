@@ -24,7 +24,7 @@
     absolute
     >
 
-      <v-toolbar-title>Cool Tools{{$route.name}}</v-toolbar-title>
+      <v-toolbar-title>{{$route.name}}</v-toolbar-title>
   </v-app-bar>
 
   <v-main>
@@ -53,11 +53,11 @@ export default {
   },
   data: () => ({
     items: [
-      {
-        icon: 'mdi-home',
-        text: 'Home',
-        link: '/',
-      },
+      // {
+      //   icon: 'mdi-home',
+      //   text: 'Home',
+      //   link: '/',
+      // },
       {
         icon: 'mdi-terraform',
         text: 'Terraform Modules',

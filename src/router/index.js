@@ -1,22 +1,23 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+// import HomeView from '../views/HomeView.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    component: HomeView
+    name: 'Terraform Modules',
+    component: () => import('../views/tf-modules.vue')
   },
   {
     path: '/tf-modules',
-    name: ' - Terraform Modules',
+    name: 'Terraform Modules',
     component: () => import('../views/tf-modules.vue')
   },
   {
     path: '/Settings',
-    name: ' - Settings',
+    name: 'Settings',
     component: () => import('../views/Settings.vue')
   }
 ]
